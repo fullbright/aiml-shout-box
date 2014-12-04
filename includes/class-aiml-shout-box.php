@@ -2,7 +2,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-class AIML_Shout_box {
+class AIML_Shout_box extends WP_Widget {
 
 	/**
 	 * The single instance of AIML_Shout_box.
@@ -83,10 +83,14 @@ class AIML_Shout_box {
 	 * @return  void
 	 */
 	public function __construct ( $file = '', $version = '1.0.0' ) {
-		$this->_version = $version;
+            
+        $this->_version = $version;
 		$this->_token = 'aiml_shout_box';
 
-		// Load plugin environment variables
+        // Define the widget name
+        parent::WP_Widget(false, $name = __('Ciara Shoutbox', $this->_token));
+            
+        // Load plugin environment variables
 		$this->file = $file;
 		$this->dir = dirname( $this->file );
 		$this->assets_dir = trailingslashit( $this->dir ) . 'assets';
@@ -112,7 +116,89 @@ class AIML_Shout_box {
 		// Handle localisation
 		$this->load_plugin_textdomain();
 		add_action( 'init', array( $this, 'load_localisation' ), 0 );
-	} // End __construct ()
+    } // End __construct ()
+
+    /**
+     * The form function is intended to show the widget's html
+     *
+     */
+    function form($instance)
+    {
+        $title = '';
+        $text = '';
+        $textarea = '';
+
+        if($instance)
+        {
+            $title = $instance['title'];
+            $text = $instance['text'];
+            $textarea = $instance['textarea'];
+        }
+    ?>
+        <p>
+            <label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Widget Title', 'wp_widget_plugin'); ?></label>
+            <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo $title; ?>" />
+
+        </p>
+
+        <p>
+            <label for="<?php echo $this->get_field_id('text'); ?>"><?php _e('Text:', 'wp_widget_plugin'); ?></label>
+            <input class="widefat" id="<?php echo $this->get_field_id('text'); ?>" name="<?php echo $this->get_field_name('text'); ?>" type="text" value="<?php echo $text; ?>" />
+        </p>
+
+        <p>
+            <label for="<?php echo $this->get_field_id('textarea'); ?>"><?php _e('Textarea:', 'wp_widget_plugin'); ?></label>
+            <textarea class="widefat" id="<?php echo $this->get_field_id('textarea'); ?>" name="<?php echo $this->get_field_name('textarea'); ?>"><?php echo $textarea; ?></textarea>
+        </p>
+    <?php
+    } // End form()
+
+    /**
+     * This function is called when we update our widget
+     */
+    function update($new_instance, $old_instance)
+    {
+        $instance = $old_instance;
+
+        // update the fields
+        $instance['text'] = strip_tags($new_instance['text']);
+        $instance['title'] = strip_tags($new_instance['title']);
+        $instance['textarea'] = strip_tags($new_instance['textarea']);
+
+        return $instance;
+    } // End update()
+
+    function widget($args, $instance)
+    {
+        extract($args);
+
+        // widget options
+        $title = apply_filters('widget_title', $instance['title']);
+        $text = $instance['text'];
+        $textarea = $instance['textarea'];
+
+        echo $before_widget;
+    ?>
+        <!-- shoutbox -->
+        <div class="shout_box">
+            <div class="header">
+                Shout Box<div class="close_btn">&nbsp;</div>
+            </div>
+            <div id="post_url" style="display:none;"><?php echo plugins_url('shout.php', dirname(__FILE__));; ?></div>
+            <div class="toggle_chat">
+                <div class="message_box"></div>
+                        
+                <div class="user_info">
+                    <input name="shout_username" id="shout_username" type="text" placeholder="Your Name" maxlength="15" />
+                    <input name="shout_custid" id="shout_custid" type="text" placeholder="Your customer ID" maxlength="15" />
+                    <input name="shout_message" id="shout_message" type="text" placeholder="Type Message Hit Enter"               maxlength="100" />
+                </div>
+            </div>
+        </div><!-- shoutbox end -->
+    <?php
+        echo $after_widget;
+    }
+
 
 	/**
 	 * Wrapper function to register a new post type

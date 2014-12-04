@@ -44,14 +44,14 @@ function AIML_Shout_box () {
 	return $instance;
 }
 
-//AIML_Shout_box();
+AIML_Shout_box();
 //
 function aiml_shout_box_show()
 {
 
 ?>
 
-    <!-- shoutbox -->
+        <!-- shoutbox -->
         <div class="shout_box">
                 <div class="header">Shout Box <div class="close_btn">&nbsp;</div></div>
                 <div id="post_url" style="display:none;"><?php echo plugins_url('shout.php', __FILE__); ?></div>
@@ -75,4 +75,10 @@ function aiml_shout_box_scripts()
     wp_enqueue_script( 'aiml_shout_box', plugins_url('assets/js/aiml_shout_box.js', __FILE__), array('jquery'), '1.0.0', true );
 }
 
+function register_aimlshoutbox_widget()
+{
+    register_widget('AIML_Shout_box');
+}
+
 add_action('wp_enqueue_scripts', aiml_shout_box_scripts);
+add_action('widgets_init', 'register_aimlshoutbox_widget');
