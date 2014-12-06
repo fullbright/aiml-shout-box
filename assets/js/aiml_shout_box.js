@@ -15,6 +15,13 @@ jQuery(document).ready(function($){
                     var output_msg = '<div class="shout_msg"><time>'+dateString+'</time><span class="username">'+iusername+'</span><span class="message">'+imessage+'</span></div>';
                     $(output_msg).hide().appendTo('.message_box').fadeIn();
 
+                    // clean the input
+                    $('#shout_message').val('');
+                    $('#shout_notifications').removeClass('status-*').text('Go!');
+
+                    //TODO Display a spinner to show that the request is pending
+                    $('#shout_notifications').text('...');
+
                     post_data = {'username':iusername, 'message':imessage, 'custid':icustid};
 
                     //send data to "shout.php" using jQuery $.post()
@@ -41,12 +48,15 @@ jQuery(document).ready(function($){
                         var scrolltoh = $('.message_box')[0].scrollHeight;
                         $('.message_box').scrollTop(scrolltoh);
                         
-                        //reset value of message box
+                        //reset value of message box and empty the notification
                         $('#shout_message').val('');
+                        $('#shout_notifications').text('Go!');
                         
                     }).fail(function(err) {                
                         //alert HTTP server error
-                        alert(err.statusText); 
+                        //TODO Change this into a hidden div inside the chat box
+                        //alert(err.statusText); 
+                        $('#shout_notifications').addClass('status-error').text("/!\\").attr('alt', 'Sorry, an error occured.');
                     });
                 }
                 else
@@ -186,3 +196,4 @@ jQuery(document).ready(function($){
     };
 
 });
+

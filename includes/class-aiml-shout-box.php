@@ -187,11 +187,13 @@ class AIML_Shout_box extends WP_Widget {
             <div id="post_url" style="display:none;"><?php echo plugins_url('shout.php', dirname(__FILE__));; ?></div>
             <div class="toggle_chat">
                 <div class="message_box"></div>
-                        
                 <div class="user_info">
                     <input name="shout_username" id="shout_username" type="text" placeholder="Your Name" maxlength="15" />
                     <input name="shout_custid" id="shout_custid" type="text" placeholder="Your customer ID" maxlength="15" />
-                    <input name="shout_message" id="shout_message" type="text" placeholder="Type Message Hit Enter"               maxlength="100" />
+                    <div class="shout_userinput">
+                        <input name="shout_message" id="shout_message" type="text" placeholder="Type Message Hit Enter" maxlength="100" />
+                        <div id='shout_notifications' class='system_info'>Go!</div>
+                    </div>
                 </div>
             </div>
         </div><!-- shoutbox end -->
